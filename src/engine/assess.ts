@@ -24,6 +24,7 @@ function checkSetback(i: RuleInput): string | null {
 
 /**
  * Pure assessment function (no I/O, deterministic).
+ * Returns LIKELY_EXEMPT only if all three checks pass.
  */
 export function assess(input: RuleInput): RuleResult {
   const failures = [checkArea(input), checkHeight(input), checkSetback(input)]
@@ -42,5 +43,5 @@ export function assess(input: RuleInput): RuleResult {
   return { verdict: 'NOT_EXEMPT', reasons: failures };
 }
 
-// Re-exports for unit tests if needed
+// (Optional) export internals for unit tests/debugging
 export const _internal = { area, checkArea, checkHeight, checkSetback, r1 };
