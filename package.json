@@ -13,6 +13,9 @@
 	"pnpm": {
 		"allowedScripts": {
 			"esbuild": "true"
-		}
+		},
+		"onlyBuiltDependencies": [
+			"esbuild"
+		]
 	}
 }
