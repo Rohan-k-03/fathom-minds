@@ -1,6 +1,6 @@
 import type { OverlaySnapshot, OverlayFinding } from './types';
 
-const RESIDENTIAL = new Set(['R1','R2','R3','R4','R5']);
+const RESIDENTIAL = new Set(['R1', 'R2', 'R3', 'R4', 'R5']);
 
 export function evaluateOverlays(snapshot: OverlaySnapshot): OverlayFinding {
   const reasons: string[] = [];
@@ -16,7 +16,11 @@ export function evaluateOverlays(snapshot: OverlaySnapshot): OverlayFinding {
   if (snapshot.floodControlLot) {
     reasons.push('Lot intersects a flood control/hazard area.');
   }
-  if (snapshot.floodCategory && snapshot.floodCategory !== 'NONE' && snapshot.floodCategory !== 'UNKNOWN') {
+  if (
+    snapshot.floodCategory &&
+    snapshot.floodCategory !== 'NONE' &&
+    snapshot.floodCategory !== 'UNKNOWN'
+  ) {
     reasons.push(`Flood category ${snapshot.floodCategory} present.`);
   }
   if (snapshot.bal === 'BAL-40' || snapshot.bal === 'BAL-FZ') {
