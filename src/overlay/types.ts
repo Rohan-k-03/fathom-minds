@@ -1,11 +1,11 @@
 export type Zone =
   | 'R1'|'R2'|'R3'|'R4'|'R5'
   | 'RU1'|'RU2'|'RU3'|'RU4'|'RU5'|'RU6'
-  | 'B1'|'B2'|'B3'|'B4'
+  | 'B1'|'B2'|'B3'|'B4'|'B5'|'B6'|'B7'|'B8'
   | 'IN1'|'IN2'|'IN3'|'IN4'
-  | 'B5'|'B6'|'B7'|'B8'
   | 'SP1'|'SP2'|'SP3'
-  | 'RE1'|'RE2'|'C1'|'C2'|'C3'|'C4'
+  | 'RE1'|'RE2'
+  | 'C1'|'C2'|'C3'|'C4'
   | 'W1'|'W2'|'W3'
   | 'UNKNOWN';
 
@@ -25,9 +25,9 @@ export type FloodCategory =
 
 export interface OverlaySnapshot {
   zone: Zone;
-  floodControlLot: boolean;       // kept for backward compatibility
+  floodControlLot: boolean;      // kept for backward compatibility
   bal: BAL;
-  floodCategory?: FloodCategory;  // optional richer signal
+  floodCategory?: FloodCategory; // optional richer signal
 }
 
 export interface OverlayFinding {

@@ -5,7 +5,7 @@ const RESIDENTIAL = new Set(['R1','R2','R3','R4','R5']);
 export function evaluateOverlays(snapshot: OverlaySnapshot): OverlayFinding {
   const reasons: string[] = [];
 
-  // Unknowns => not approvable
+  // Unknowns => surface why it can’t be approved automatically
   if (snapshot.zone === 'UNKNOWN') reasons.push('Zone is unknown (insufficient data).');
   if (snapshot.bal === 'UNKNOWN') reasons.push('BAL rating is unknown (insufficient data).');
 
