@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { overlayFromRaw } from '../src/overlay/adapter';
+import { overlayFromRaw } from '../src/overlay/adapter.ts';
 
 describe('overlayFromRaw', () => {
   it('normalizes common provider keys', () => {
