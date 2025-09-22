@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import type { OverlaySnapshot } from '../../src/overlay/types';
 import { runAssessment } from '../../apps/sepp-ui-prototype/src/data/runAssessment.js';
 
 const baseProperty = {
@@ -40,7 +41,12 @@ describe('runAssessment (frontend data layer)', () => {
 
     const deps = {
       loadAssessAll: async () => assessAllMock,
-      loadOverlaySnapshotForSample: async () => ({ zone: 'R1', bal: 'BAL-LOW', floodControlLot: false }),
+      loadOverlaySnapshotForSample: async () => ({
+        zone: 'R1',
+        bal: 'BAL-LOW',
+        floodControlLot: false,
+        floodCategory: 'NONE',
+      } as OverlaySnapshot),
     };
 
     const result = await runAssessment(baseProperty, baseProposal, deps);
