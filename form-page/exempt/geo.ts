@@ -1,9 +1,12 @@
 import * as turf from "@turf/turf";
+import { Feature, Polygon, MultiPolygon } from "geojson";
 import zoningData from "./geo_data_sample/LEP__Land_Zoning.geojson";
 
-// Geocode the address
+// Geocode the address using OpenStreetMap Nominatim
 async function geocodeAddress(address: string): Promise<[number, number]> {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
+  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+    address
+  )}`;
   const res = await fetch(url);
   const data = await res.json();
 
@@ -20,8 +23,9 @@ async function findZone(address: string) {
   const point = turf.point([lon, lat]);
 
   for (const feature of zoningData.features) {
-    if (turf.booleanPointInPolygon(point, feature)) {
-      return feature.properties; // e.g., ZONE, DESCRIPTION
+    // ✅ Feature is already typed as Polygon | MultiPolygon from geojson.d.ts
+    if (turf.booleanPointInPolygon(point, feature as Feature<Polygon | MultiPolygon>)) {
+      return feature.properties; // e.g., ZONE, EVIEW_DISP
     }
   }
 
@@ -35,7 +39,12 @@ async function findZone(address: string) {
   try {
     const zone = await findZone(address);
     if (zone) {
-      console.log("This address is in zone:", zone.ZONE, "-", zone.EVIEW_DISP);
+      console.log(
+        "This address is in zone:",
+        zone.ZONE,
+        "-",
+        zone.EVIEW_DISP
+      );
     } else {
       console.log("Address not inside any zoning polygon");
     }
