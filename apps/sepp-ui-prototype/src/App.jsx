@@ -679,6 +679,12 @@ export default function App() {
 
         {guidanceVisible && (
           <section className="card layout-span-4 guidance-card">
+            {/** Disclaimer message */}
+            <p className="muted" style={{ marginTop: 12 }}>
+            <strong>Privacy notice:</strong> This tool records assessment advice (sample ID,
+              inputs, verdict, and SEPP clauses) in your browser storage only. Data is not
+               transmitted to Council servers.
+            </p>
             <div className="card-header">
               <h3>Next steps</h3>
             </div>
