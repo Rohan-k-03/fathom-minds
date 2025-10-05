@@ -113,6 +113,24 @@ export default function App() {
   const [properties, setProperties] = useState([]);
   const [selectedId, setSelectedId] = useState("");
 
+  // STATE FOR ASSESSMENT LOG
+  const [logEntries, setLogEntries] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("assessmentLog") || "[]");
+    } catch {
+      return [];
+    }
+  });
+
+  // PERSIST LOG TO LOCAL STORAGE WHENEVER IT CHANGES
+  useEffect(() => {
+    try {
+      localStorage.setItem("assessmentLog", JSON.stringify(logEntries));
+    } catch (err) {
+      console.error("Failed to persist assessment log:", err);
+    }
+}, [logEntries]);
+
   // Structure inputs
   const [type, setType] = useState("shed");
   const [length, setLength] = useState(3);
@@ -221,8 +239,20 @@ export default function App() {
         checks: blockedChecks,
         result: { verdict: "NOT_EXEMPT" },
       });
-      return;
-    }
+       
+      // LOG BLOCKED RESULT
+        const newEntry = {
+        timestamp: new Date().toISOString(),
+        sampleId: selected.id,
+        inputs: proposal,
+        verdict: "NOT_EXEMPT",
+        clauses: blockedChecks.map((c) => c.clause || "N/A"),
+  };
+  setLogEntries((prev) => [...prev, newEntry]);
+
+  return;
+}
+
     let cancelled = false;
 
     (async () => {
@@ -244,6 +274,16 @@ export default function App() {
             null;
 
           setAssessment({ status: "done", checks, result: { verdict, overlay } });
+
+          // LOG SUCCESSFUL RESULT
+          const newEntry = {
+            timestamp: new Date().toISOString(),
+            sampleId: selected.id,
+            inputs: proposal,
+            verdict,
+            clauses: checks.map((c) => c.clause || "N/A"),
+        };
+          setLogEntries((prev) => [...prev, newEntry]);
         } else {
           throw new Error(out?.message || "Unknown engine error");
         }
