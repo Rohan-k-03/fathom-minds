@@ -112,7 +112,10 @@ function toCSV(rows) {
 }
 
 export default function App() {
-  
+  // Data
+  const [properties, setProperties] = useState([]);
+  const [selectedId, setSelectedId] = useState("");
+
   // STATE FOR ASSESSMENT LOG
   const [logEntries, setLogEntries] = useState(() => {
     try {
@@ -122,9 +125,14 @@ export default function App() {
     }
   });
 
-  // Data
-  const [properties, setProperties] = useState([]);
-  const [selectedId, setSelectedId] = useState("");
+  // PERSIST LOG TO LOCAL STORAGE WHENEVER IT CHANGES
+  useEffect(() => {
+    try {
+      localStorage.setItem("assessmentLog", JSON.stringify(logEntries));
+    } catch (err) {
+      console.error("Failed to persist assessment log:", err);
+    }
+}, [logEntries]);
 
   // Structure inputs
   const [type, setType] = useState("shed");
@@ -217,87 +225,78 @@ export default function App() {
     });
   }, [selected]);
 
-  // **Persist to localStorage whenever logEntries changes**
-  useEffect(() => {
-  localStorage.setItem("assessmentLog", JSON.stringify(logEntries));
-}, [logEntries]);
-
   // Run assessment when selection/inputs change
   useEffect(() => {
-  if (!selected) return;
+    if (!selected) return;
+    if (precheckBlocking) {
+      const blockedChecks = precheckTriggers.map((item) => ({
+        id: `precheck-${item.key}`,
+        ok: false,
+        message: `${item.label} applies to this site.`,
+        clause: "SEPP Exempt Development 2008 Part 2 — General restrictions",
+        citation: item.description,
+      }));
 
-// --- Handle blocking precheck case ---
-if (precheckBlocking) {
-  const blockedChecks = precheckTriggers.map((item) => ({
-    id: `precheck-${item.key}`,
-    ok: false,
-    message: `${item.label} applies to this site.`,
-    clause: "SEPP Exempt Development 2008 Part 2 — General restrictions",
-    citation: item.description,
-  }));
-
-  setAssessment({
-    status: "blocked",
-    checks: blockedChecks,
-    result: { verdict: "NOT_EXEMPT" },
-  });
-
-  // LOG BLOCKED RESULT
-  const newEntry = {
-    timestamp: new Date().toISOString(),
-    sampleId: selected.id,
-    inputs: proposal,
-    verdict: "NOT_EXEMPT",
-    clauses: blockedChecks.map((c) => c.clause || "N/A"),
+      setAssessment({
+        status: "blocked",
+        checks: blockedChecks,
+        result: { verdict: "NOT_EXEMPT" },
+      });
+       
+      // LOG BLOCKED RESULT
+        const newEntry = {
+        timestamp: new Date().toISOString(),
+        sampleId: selected.id,
+        inputs: proposal,
+        verdict: "NOT_EXEMPT",
+        clauses: blockedChecks.map((c) => c.clause || "N/A"),
   };
   setLogEntries((prev) => [...prev, newEntry]);
 
   return;
 }
 
+    let cancelled = false;
 
-  let cancelled = false;
+    (async () => {
+      try {
+        setAssessment({ status: "running" });
+        const out = await runAssessment(selected, proposal);
+        if (cancelled) return;
 
-  (async () => {
-    try {
-      setAssessment({ status: "running" });
-      const out = await runAssessment(selected, proposal);
-      if (cancelled) return;
+        if (out && out.ok) {
+          // Use engine output directly; do not re-derive verdict in the UI
+          const checks = out.result?.checks || out.checks || out.issues || [];
+          const verdict = out.result?.verdict ?? "NOT_EXEMPT";
 
-      if (out && out.ok) {
-        const checks = out.result?.checks || out.checks || out.issues || [];
-        const verdict = out.result?.verdict ?? "NOT_EXEMPT";
-        const overlay =
-          out.result?.overlay || out.overlay || out.result?.overlays || null;
+          // Keep any overlay snapshot/findings if the engine surfaced them
+          const overlay =
+            out.result?.overlay ||
+            out.overlay ||
+            out.result?.overlays ||
+            null;
 
-        setAssessment({ status: "done", checks, result: { verdict, overlay } });
+          setAssessment({ status: "done", checks, result: { verdict, overlay } });
 
-        // LOG SUCCESSFUL RESULT
-        const newEntry = {
-          timestamp: new Date().toISOString(),
-          sampleId: selected.id,
-          inputs: proposal,
-          verdict,
-          clauses: checks.map((c) => c.clause || "N/A"),
+          // LOG SUCCESSFUL RESULT
+          const newEntry = {
+            timestamp: new Date().toISOString(),
+            sampleId: selected.id,
+            inputs: proposal,
+            verdict,
+            clauses: checks.map((c) => c.clause || "N/A"),
         };
-        setLogEntries((prev) => [...prev, newEntry]);
-      } else {
-        throw new Error(out?.message || "Unknown engine error");
+          setLogEntries((prev) => [...prev, newEntry]);
+        } else {
+          throw new Error(out?.message || "Unknown engine error");
+        }
+      } catch (e) {
+        if (!cancelled) setAssessment({ status: "error", message: e.message || String(e) });
       }
-    } catch (e) {
-      if (!cancelled)
-        setAssessment({
-          status: "error",
-          message: e.message || String(e),
-        });
-    }
-  })();
+    })();
 
-  return () => {
-    cancelled = true;
-  };
-}, [selected, proposal]);
-
+    return () => { cancelled = true; };
+  }, [selected, proposal, precheckBlocking, precheckKey]);
 
   /* ---------- Add Sample: save, persist, download ---------- */
   function handleCreateSample(e) {
@@ -737,12 +736,6 @@ if (precheckBlocking) {
 
         {guidanceVisible && (
           <section className="card layout-span-4 guidance-card">
-            {/** Disclaimer message */}
-            <p className="muted" style={{ marginTop: 12 }}>
-            <strong>Privacy notice:</strong> This tool records assessment advice (sample ID,
-              inputs, verdict, and SEPP clauses) in your browser storage only. Data is not
-               transmitted to Council servers.
-            </p>
             <div className="card-header">
               <h3>Next steps</h3>
             </div>

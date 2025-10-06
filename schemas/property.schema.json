@@ -10,7 +10,7 @@
         "minItems": 3,
         "items": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "required": [
             "id",
             "label",
