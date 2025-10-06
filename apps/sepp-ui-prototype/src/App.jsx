@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { loadProperties } from "./data/loadProperties";
 import { runAssessment } from "./data/runAssessment";
 import "./App.css";
+import Search from "./components/Search.";
+
+
 
 /** Friendly zone names (R1 → “General Residential”, etc.) */
 import { getZoneFriendlyName } from "../../../src/overlay/zoneNames";
@@ -435,6 +438,19 @@ if (precheckBlocking) {
         .icon-btn { flex: 0 0 auto; }
       `}</style>
 
+          {/* === HEADER START === */}
+    <header className="app-header">
+      <h1 className="title">Exempt Development AI/ML Tool</h1>
+      <nav className="nav-links">
+        <a href="#">Home</a>
+        <a href="#">Requirements</a>
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+      </nav>
+    </header>
+    {/* === HEADER END === */}
+
+
       <header className="app-header">
         <h1 className="title">SEPP Sheds and Patios</h1>
         <div className="badges">
@@ -442,6 +458,7 @@ if (precheckBlocking) {
           <Badge tone="green">Data: validated</Badge>
           <Badge tone="neutral">Ruleset: overlays enabled</Badge>
         </div>
+        <Search />
       </header>
 
       <div className="layout-grid">
@@ -847,6 +864,13 @@ if (precheckBlocking) {
           </p>
         </form>
       </Modal>
+          {/* === FOOTER START === */}
+    <footer className="app-footer">
+      <p>© 2025 Team Vision — Capstone Project</p>
+      <p>References: SEPP 2008 • Albury LEP 2010 • DCP 2010</p>
+    </footer>
+    {/* === FOOTER END === */}
+
     </main>
   );
 }
