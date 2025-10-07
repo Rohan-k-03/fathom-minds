@@ -2,7 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 import { loadProperties } from "./data/loadProperties";
 import { runAssessment } from "./data/runAssessment";
 import "./App.css";
-import Search from "./components/Search.";
+import Search from "./components/Search";
+
+
 
 
 
@@ -446,6 +448,28 @@ export default function App() {
         <a href="#">About Us</a>
         <a href="#">Contact</a>
       </nav>
+
+      <button
+  onClick={() => {
+    const currentTheme = document.documentElement.getAttribute("data-theme");
+    document.documentElement.setAttribute(
+      "data-theme",
+      currentTheme === "dark" ? "light" : "dark"
+    );
+  }}
+  style={{
+    border: "none",
+    background: "var(--card)",
+    color: "var(--ink)",
+    padding: "8px 16px",
+    borderRadius: "12px",
+    cursor: "pointer",
+    fontWeight: 600,
+  }}
+>
+Dark Mode
+</button>
+
     </header>
     {/* === HEADER END === */}
 
@@ -859,7 +883,7 @@ export default function App() {
       </Modal>
           {/* === FOOTER START === */}
     <footer className="app-footer">
-      <p>© 2025 Team Vision — Capstone Project</p>
+      <p>© 2025 Team Fathom Minds — Capstone Project</p>
       <p>References: SEPP 2008 • Albury LEP 2010 • DCP 2010</p>
     </footer>
     {/* === FOOTER END === */}

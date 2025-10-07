@@ -19,5 +19,8 @@
 		"onlyBuiltDependencies": [
 			"esbuild"
 		]
+	},
+	"dependencies": {
+		"react-router-dom": "^7.9.3"
 	}
 }

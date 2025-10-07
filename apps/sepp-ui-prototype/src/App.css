@@ -11,6 +11,21 @@
   --ok: #059669;
   --bad: #dc2626;
 }
+/* DARK MODE THEME */
+[data-theme="dark"] {
+  --bg: #101432;
+  --bg-accent-1: rgba(99, 102, 241, 0.08);
+  --bg-accent-2: rgba(16, 185, 129, 0.08);
+  --card: rgba(30, 41, 59, 0.95);
+  --card-border: rgba(148, 163, 184, 0.25);
+  --ink: #f1eaea;
+  --muted: #94a3b8;
+  --accent: #818cf8;
+  --accent-strong: #a5b4fc;
+  --ok: #10b981;
+  --bad: #ef4444;
+}
+
 
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; }
