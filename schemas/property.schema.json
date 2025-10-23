@@ -1,0 +1,125 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Sample Properties file",
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["properties"],
+    "properties": {
+      "properties": {
+        "type": "array",
+        "minItems": 3,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "label",
+            "zone",
+            "lot_size_m2",
+            "frontage_m",
+            "corner_lot",
+            "setbacks_m",
+            "bal",
+            "floodCategory",
+            "floodControlLot",
+            "prechecks",
+            "services",
+            "overlay_source",
+            "foreshore_proximity"
+          ],
+          "properties": {
+            "id": { "type": "string", "pattern": "^[A-Z]+-[0-9]{3}$" },
+            "label": { "type": "string", "minLength": 3 },
+            "zone": { "type": "string", "minLength": 1 },
+            "zone_label": { "type": "string" },
+            "parcel_id": { "type": "string" },
+            "address": { "type": "string" },
+            "locality": { "type": "string" },
+            "latitude": { "type": "number" },
+            "longitude": { "type": "number" },
+            "bal": { "type": "string", "minLength": 1 },
+            "floodCategory": { "type": "string", "minLength": 1 },
+            "floodControlLot": { "type": "boolean" },
+            "foreshore_proximity": { "type": "boolean" },
+            "lot_size_m2": { "type": "number", "exclusiveMinimum": 0 },
+            "frontage_m": { "type": "number", "exclusiveMinimum": 0 },
+            "corner_lot": { "type": "boolean" },
+            "setbacks_m": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["front", "left", "right", "rear"],
+              "properties": {
+                "front": { "type": "number", "minimum": 0 },
+                "secondary_front": { "type": "number", "minimum": 0 },
+                "left": { "type": "number", "minimum": 0 },
+                "right": { "type": "number", "minimum": 0 },
+                "rear": { "type": "number", "minimum": 0 }
+              }
+            },
+            "prechecks": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "heritage_item",
+                "heritage_conservation_area",
+                "environmentally_sensitive",
+                "critical_habitat",
+                "asbestos_management_area"
+              ],
+              "properties": {
+                "heritage_item": { "type": "boolean" },
+                "heritage_conservation_area": { "type": "boolean" },
+                "environmentally_sensitive": { "type": "boolean" },
+                "critical_habitat": { "type": "boolean" },
+                "asbestos_management_area": { "type": "boolean" }
+              }
+            },
+            "services": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "near_easement",
+                "above_sewer_main",
+                "distance_to_dwelling_m"
+              ],
+              "properties": {
+                "near_easement": { "type": "boolean" },
+                "above_sewer_main": { "type": "boolean" },
+                "distance_to_dwelling_m": { "type": "number", "minimum": 0 }
+              }
+            },
+            "overlay_source": { "type": "string", "minLength": 1 },
+            "notes": { "type": "string" }
+          },
+          "allOf": [
+            {
+              "if": { "properties": { "corner_lot": { "const": true } } },
+              "then": {
+                "properties": {
+                  "setbacks_m": {
+                    "type": "object",
+                    "required": ["secondary_front"]
+                  }
+                }
+              }
+            },
+            {
+              "if": { "properties": { "corner_lot": { "const": false } } },
+              "then": {
+                "properties": {
+                  "setbacks_m": {
+                    "type": "object",
+                    "not": {
+                      "type": "object",
+                      "required": ["secondary_front"]
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+  

@@ -1,0 +1,16 @@
+<svg width="160" height="80" viewBox="0 0 160 80" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title">
+  <title>Albury City Council</title>
+  <g fill="#0A2F45">
+    <path d="M80 4c-30.9 0-56 25.1-56 56h9c0-26 21-47 47-47s47 21 47 47h9c0-30.9-25.1-56-56-56z"/>
+    <path d="M80 18c-22 0-40 18-40 40h7c0-18.2 14.8-33 33-33s33 14.8 33 33h7c0-22-18-40-40-40z"/>
+    <path d="M80 32c-13.3 0-24 10.7-24 24h6c0-10 8-18 18-18s18 8 18 18h6c0-13.3-10.7-24-24-24z"/>
+    <rect x="79" y="4" width="2" height="52"/>
+    <rect x="58" y="10" width="2" height="46" transform="rotate(-15 59 33)"/>
+    <rect x="100" y="10" width="2" height="46" transform="rotate(15 101 33)"/>
+    <rect x="46" y="18" width="2" height="40" transform="rotate(-30 47 38)"/>
+    <rect x="112" y="18" width="2" height="40" transform="rotate(30 113 38)"/>
+    <rect x="36" y="30" width="2" height="32" transform="rotate(-45 37 46)"/>
+    <rect x="122" y="30" width="2" height="32" transform="rotate(45 123 46)"/>
+  </g>
+  <text x="80" y="74" text-anchor="middle" font-family="'Georgia', 'Times New Roman', serif" font-size="26" fill="#0A2F45">AlburyCity</text>
+</svg>

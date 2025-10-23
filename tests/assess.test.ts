@@ -1,0 +1,74 @@
+import { describe, it, expect } from 'vitest';
+import { assess } from '../src/engine/assess';
+import type { RuleInput } from '../src/engine/types';
+
+describe('FM-27 rules engine', () => {
+  it('LIKELY EXEMPT when all checks pass (area, height, setback)', () => {
+    const input: RuleInput = {
+      type: 'shed',
+      length: 3.2,
+      width: 3.0,
+      height: 2.4,
+      setback: 0.5,
+    };
+    const res = assess(input);
+    expect(res.verdict).toBe('LIKELY EXEMPT');
+    expect(res.checks).toHaveLength(3);
+    expect(res.checks.every((c) => c.ok)).toBe(true);
+  });
+
+  it('boundary values pass: area=20, height=3.0, setback=0.5', () => {
+    const input: RuleInput = {
+      type: 'patio',
+      length: 5,
+      width: 4,
+      height: 3.0,
+      setback: 0.5,
+    };
+    const res = assess(input);
+    expect(res.verdict).toBe('LIKELY EXEMPT');
+    expect(res.checks.every((c) => c.ok)).toBe(true);
+  });
+
+  it('NOT EXEMPT when setback < 0.5', () => {
+    const input: RuleInput = {
+      type: 'shed',
+      length: 3.2,
+      width: 3.0,
+      height: 2.4,
+      setback: 0.3,
+    };
+    const res = assess(input);
+    expect(res.verdict).toBe('NOT EXEMPT');
+    expect(res.reasons.join(' ')).toMatch(/under 0\.5/);
+    expect(res.checks.find((c) => c.id === 'structure-setback')?.ok).toBe(false);
+  });
+
+  it('NOT EXEMPT when height > 3.0', () => {
+    const input: RuleInput = {
+      type: 'shed',
+      length: 2.0,
+      width: 2.0,
+      height: 3.4,
+      setback: 2.0,
+    };
+    const res = assess(input);
+    expect(res.verdict).toBe('NOT EXEMPT');
+    expect(res.reasons.join(' ')).toMatch(/exceeds 3\.0/);
+    expect(res.checks.find((c) => c.id === 'structure-height')?.clause).toMatch(/2\.18/);
+  });
+
+  it('NOT EXEMPT when area > 20', () => {
+    const input: RuleInput = {
+      type: 'patio',
+      length: 5.2,
+      width: 4.2,
+      height: 2.4,
+      setback: 1.0,
+    };
+    const res = assess(input);
+    expect(res.verdict).toBe('NOT EXEMPT');
+    expect(res.reasons.join(' ')).toMatch(/exceeds 20/);
+    expect(res.checks.find((c) => c.id === 'structure-area')?.ok).toBe(false);
+  });
+});
