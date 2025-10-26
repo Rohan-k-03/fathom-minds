@@ -1,6 +1,3 @@
-[![CI](https://github.com/Rohan-k-03/fathom-minds/actions/workflows/ci.yml/badge.svg)](https://github.com/Rohan-k-03/fathom-minds/actions/workflows/ci.yml)
-
-# fathom-minds
 # Fathom Minds – SEPP Assessment Toolkit
 
 This repository contains the source code and datasets behind the Fathom Minds prototype that helps council staff assess *State Environmental Planning Policy (SEPP) Part 2* scenarios. The project combines a TypeScript rules engine with a modern React frontend and supporting scripts for ingesting and validating property data.
